@@ -2,7 +2,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import { cartReducer } from './reducers/cartReducers';
-import { placeOrderReducer } from './reducers/orderReducers';
+import { orderDetailsReducer, placeOrderReducer } from './reducers/orderReducers';
 
 import { productListReducer, productReducer } from './reducers/productReducers';
 import {
@@ -20,7 +20,8 @@ const reducer = combineReducers({
   userRegister: userRegisterReducer,
   userDetails: userDetailsReducer,
   updateUserProfile: updateUserProfileReducer,
-  placeOrder: placeOrderReducer
+  placeOrder: placeOrderReducer,
+  orderDetails: orderDetailsReducer
 });
 
 const cartItemsFromLS = localStorage.getItem('cartItems')
