@@ -14,7 +14,17 @@ const PlaceOrderScreen = ({history}) => {
   };
 
   const cart = useSelector((state) => state.cart);
-  const { error } = cart;
+
+  const { order, success, error } = useSelector(state => state.placeOrder);
+
+  console.log(success);
+
+  useEffect(() => {
+    console.log('here in useEffect, success->', success);
+    if(success){
+      history.push(`/orders/${order._id}`);
+    }
+  }, [success, history, order?._id])
 
   cart.itemsPrice = addDecimals(
     cart.cartItems.reduce((acc, item) => {

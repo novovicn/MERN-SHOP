@@ -1,4 +1,7 @@
-export const placeOrderReducer = (state = { order: {} }, action) => {
+
+
+
+export const placeOrderReducer = (state = { order: {}, success: false }, action) => {
   switch (action.type) {
     case 'PLACE_ORDER_REQUEST':
       return {
@@ -9,6 +12,7 @@ export const placeOrderReducer = (state = { order: {} }, action) => {
       return {
         ...state,
         loading: false,
+        success:true,
         order: action.payload,
       };
     case 'PLACE_ORDER_FAIL':
