@@ -26,7 +26,7 @@ export const placeOrderReducer = (state = { order: {}, success: false }, action)
   }
 };
 
-export const orderDetailsReducer = (state = {}, action) => {
+export const orderDetailsReducer = (state = { loading: true }, action) => {
   switch (action.type) {
     case 'ORDER_DETAILS_REQUEST':
       return {
