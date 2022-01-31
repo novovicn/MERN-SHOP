@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { getOrderDetails } from '../store/actions/orderActions';
 import { Link } from 'react-router-dom'
@@ -8,9 +9,26 @@ import Loader from '../components/Loader'
 
 const OrderScreen = ({ match }) => {
   const { order, loading, error } = useSelector((state) => state.orderDetails);
+
+  const { sdkReady, setSdkReady } = useState(false);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
+
+    const addPayPalScript = async () => {
+      const { data: clientId } = await axios.get('/api/config/paypal-client-id');
+      const script = document.createElement('script');
+      script.type= 'text/javascript';
+      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
+      script.async = true;
+      script.onload = () => {
+        setSdkReady(true);
+      }
+      document.body.appendChild(script);
+    }
+
+    
       dispatch(getOrderDetails(match.params.id));
   }, [match]);
 
