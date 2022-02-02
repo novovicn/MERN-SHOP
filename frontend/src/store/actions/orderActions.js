@@ -103,3 +103,35 @@ export const payOrder = (id, paymentResult) => async (dispatch, getState) => {
     });
   }
 };
+
+export const getUserOrders = () => async (dispatch, getState) => {
+  dispatch({
+    type: 'USER_ORDERS_REQUEST',
+  });
+  try {
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await axios.get(`/api/orders/get-user-orders`, config);
+
+    dispatch({
+      type: 'USER_ORDERS_SUCCESS',
+      payload: data
+    });
+    
+  } catch (error) {
+    dispatch({
+      type: 'USER_ORDERS_FAIL',
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
