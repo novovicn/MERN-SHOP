@@ -37,6 +37,8 @@ export const loginUser = (email, password) => async (dispatch) => {
 export const logout = () => async (dispatch) => {
   dispatch({ type: 'USER_LOGOUT' });
   localStorage.removeItem('userInfo');
+  dispatch({ type: 'USER_DETAILS_RESET' });
+  dispatch({ type: 'USER_ORDERS_RESET' });
 };
 
 export const userRegister = (name, email, password) => async (dispatch) => {
