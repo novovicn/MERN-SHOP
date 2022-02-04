@@ -61,7 +61,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
       isAdmin: user.isAdmin,
     });
   } else {
-    res.status(401);
+    res.status(404);
     throw new Error('No user found!');
   }
 });
@@ -83,14 +83,24 @@ const updateUser = asyncHandler(async (req, res) => {
       name: updatedUser.name,
       email: updatedUser.email,
       isAdmin: updatedUser.isAdmin,
-      token: genereateToken(updateUser._id)
+      token: genereateToken(updateUser._id),
     });
   } else {
-    res.status(401);
+    res.status(404);
     throw new Error('No user found!');
   }
 });
 
-export { authUser, registerUser, getUserProfile, updateUser };
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({});
+  if (users) {
+    res.json(users);
+  } else {
+    res.status(404);
+    throw new Error('Users not found!');
+  }
+});
+
+export { authUser, registerUser, getUserProfile, updateUser, getUsers };
 
 //TODO: MATCH PASSWORDS, create METHOD, and then use it here (bcrypt)
