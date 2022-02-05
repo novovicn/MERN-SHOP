@@ -146,3 +146,37 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
   }
 };
 
+
+export const getAllUsers = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: 'LIST_USERS_REQUEST',
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/users`, config);
+
+    dispatch({
+      type: 'LIST_USERS_SUCCESS',
+      payload: data,
+    });
+    
+  } catch (error) {
+    dispatch({
+      type: 'LIST_USERS_FAIL',
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
