@@ -101,6 +101,17 @@ const getUsers = asyncHandler(async (req, res) => {
   }
 });
 
-export { authUser, registerUser, getUserProfile, updateUser, getUsers };
+const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (user) {
+    await user.remove();
+    res.json({message: 'User removed!'});
+  } else {
+    res.status(404);
+    throw new Error('User not found!');
+  }
+});
+
+export { authUser, registerUser, getUserProfile, updateUser, getUsers, deleteUser };
 
 //TODO: MATCH PASSWORDS, create METHOD, and then use it here (bcrypt)

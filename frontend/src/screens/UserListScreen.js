@@ -2,12 +2,14 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
-import { getAllUsers } from '../store/actions/userActions';
+import { getAllUsers, deleteUser } from '../store/actions/userActions';
 import { Table, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 const UserListScreen = () => {
   const { loading, error, users } = useSelector((state) => state.users);
+
+  const { success: successDelete } = useSelector((state) => state.deleteUser);
 
   const orders = {};
 
@@ -15,10 +17,10 @@ const UserListScreen = () => {
   console.log('here');
   useEffect(() => {
     dispatch(getAllUsers());
-  }, [dispatch]);
+  }, [dispatch, successDelete]);
 
   const deleteHandler = (id) => {
-    console.log('delete');
+    dispatch(deleteUser(id));
   };
   return (
     <>

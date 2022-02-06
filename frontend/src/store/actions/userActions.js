@@ -40,7 +40,7 @@ export const logout = () => async (dispatch) => {
   localStorage.removeItem('userInfo');
   dispatch({ type: 'USER_DETAILS_RESET' });
   dispatch({ type: 'USER_ORDERS_RESET' });
-  //doesn't work, check 
+  //doesn't work, check
   dispatch(push('/'));
 };
 
@@ -149,7 +149,6 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
   }
 };
 
-
 export const getAllUsers = () => async (dispatch, getState) => {
   try {
     dispatch({
@@ -172,10 +171,36 @@ export const getAllUsers = () => async (dispatch, getState) => {
       type: 'LIST_USERS_SUCCESS',
       payload: data,
     });
-    
   } catch (error) {
     dispatch({
       type: 'LIST_USERS_FAIL',
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const deleteUser = (id) => async (dispatch, getState) => {
+
+  dispatch({ type: 'USER_DELETE_REQUEST' });
+  try {
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    await axios.delete(`/api/users/${id}`, config);
+    dispatch({ type: 'USER_DELETE_SUCCESS' });
+  } catch (error) {
+    dispatch({
+      type: 'USER_DELETE_FAIL',
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
