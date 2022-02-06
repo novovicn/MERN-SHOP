@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { push } from 'react-router-redux';
 
 export const loginUser = (email, password) => async (dispatch) => {
   try {
@@ -39,6 +40,8 @@ export const logout = () => async (dispatch) => {
   localStorage.removeItem('userInfo');
   dispatch({ type: 'USER_DETAILS_RESET' });
   dispatch({ type: 'USER_ORDERS_RESET' });
+  //doesn't work, check 
+  dispatch(push('/'));
 };
 
 export const userRegister = (name, email, password) => async (dispatch) => {
