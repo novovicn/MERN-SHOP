@@ -1,7 +1,7 @@
 export const productListReducer = (state = { products: [] }, action) => {
   switch (action.type) {
     case 'PRODUCT_LIST_REQUEST':
-      return { loading: true , products: [] };
+      return { loading: true, products: [] };
     case 'PRODUCT_LIST_SUCCESS':
       return { loading: false, products: action.payload };
     case 'PRODUCT_LIST_FAIL':
@@ -14,7 +14,7 @@ export const productListReducer = (state = { products: [] }, action) => {
 export const productReducer = (state = { product: {} }, action) => {
   switch (action.type) {
     case 'PRODUCT_DETAILS_REQUEST':
-      return { loading: true , product: {} };
+      return { loading: true, product: {} };
     case 'PRODUCT_DETAILS_SUCCESS':
       return { loading: false, product: action.payload };
     case 'PRODUCT_DETAILS_FAIL':
@@ -32,6 +32,21 @@ export const deleteProductReducer = (state = {}, action) => {
       return { loading: false, success: true };
     case 'PRODUCT_DELETE_FAIL':
       return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const createProductReducer = (state = {}, action) => {
+  switch (action.type) {
+    case 'CREATE_PRODUCT_REQUEST':
+      return { loading: true };
+    case 'CREATE_PRODUCT_SUCCESS':
+      return { loading: false, success: true, product: action.payload };
+    case 'CREATE_PRODUCT_FAIL':
+      return { loading: false, error: action.payload };
+    case 'CREATE_PRODUCT_RESET':
+      return {};
     default:
       return state;
   }
