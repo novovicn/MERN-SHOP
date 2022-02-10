@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
@@ -5,7 +6,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
-import { listProductDetails, updateProduct } from '../store/actions/productActions';
+import {
+  listProductDetails,
+  updateProduct,
+} from '../store/actions/productActions';
 
 const ProductEditScreen = ({ match, history }) => {
   const productId = match.params.id;
@@ -17,6 +21,7 @@ const ProductEditScreen = ({ match, history }) => {
   const [category, setCategory] = useState('');
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -49,6 +54,32 @@ const ProductEditScreen = ({ match, history }) => {
     }
   }, [dispatch, history, productId, product.name, successUpdate]);
 
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append('productImage', file);
+    setUploading(true);
+
+    try {
+      const config = {
+        headers: {
+          'Contnt-Type': 'multipart/form-data',
+        },
+      };
+
+      const { data } = await axios.post(
+        '/api/upload',
+        formData,
+        config
+      );
+      setImage(data);
+      setUploading(false);
+    } catch (error) {
+      console.log(error);
+      setUploading(false);
+    }
+  };
+
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(
@@ -62,18 +93,18 @@ const ProductEditScreen = ({ match, history }) => {
         description,
         countInStock,
       })
-    )
+    );
   };
 
   return (
     <>
-      <Link to="/admin/products" className="btn btn-light my-3">
+      <Link to="/admin/productlist" className="btn btn-light my-3">
         Go Back
       </Link>
       <FormContainer>
         <h1>Edit Product</h1>
         {loadingUpdate && <Loader />}
-        {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
+        {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
         {loading ? (
           <Loader />
         ) : error ? (
@@ -108,6 +139,8 @@ const ProductEditScreen = ({ match, history }) => {
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
               ></Form.Control>
+              <input type="file" onChange={uploadFileHandler}></input>
+              {uploading && <Loader />}
             </Form.Group>
 
             <Form.Group controlId="brand">
