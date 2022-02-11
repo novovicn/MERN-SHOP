@@ -135,3 +135,35 @@ export const getUserOrders = () => async (dispatch, getState) => {
     });
   }
 };
+
+export const getAllOrders = () => async (dispatch, getState) => {
+  dispatch({
+    type: 'ALL_ORDERS_REQUEST',
+  });
+  try {
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await axios.get(`/api/orders/`, config);
+
+    dispatch({
+      type: 'ALL_ORDERS_SUCCESS',
+      payload: data
+    });
+    
+  } catch (error) {
+    dispatch({
+      type: 'ALL_ORDERS_FAIL',
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};

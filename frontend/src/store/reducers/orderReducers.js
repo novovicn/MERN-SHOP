@@ -98,3 +98,29 @@ export const userOrdersReducer = (state = { orders: [] }, action) => {
         return state;
   }
 };
+
+export const ordersReducer = (state = { orders: [] }, action) => {
+  switch (action.type) {
+    case 'ALL_ORDERS_REQUEST':
+      return {
+        ...state,
+        loading: true,
+      };
+    case 'ALL_ORDERS_SUCCESS':
+      return {
+        ...state,
+        loading: false,
+        orders: action.payload,
+      };
+    case 'ALL_ORDERS_FAIL':
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+      case 'ALL_ORDERS_RESET':
+        return { orders: []}
+    default:
+        return state;
+  }
+};
