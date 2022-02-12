@@ -2,26 +2,32 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { PayPalButton } from 'react-paypal-button-v2';
 import { useDispatch, useSelector } from 'react-redux';
-import { getOrderDetails, payOrder } from '../store/actions/orderActions';
+import { getOrderDetails, payOrder, deliverOrder } from '../store/actions/orderActions';
 import { Link } from 'react-router-dom';
 import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 
-const OrderScreen = ({ match }) => {
+const OrderScreen = ({ match, history }) => {
 
   const orderId = match.params.id;
   const [sdkReady, setSdkReady] = useState(false);
 
   const { order, loading, error } = useSelector((state) => state.orderDetails);
-
   const { loading: loadingPay, success: successPay } = useSelector(
     (state) => state.orderPay
   );
+  const { loading: loadingDeliver, success: successDeliver } = useSelector(
+    (state) => state.orderDeliver
+  );
+  const { userInfo } = useSelector(state => state.userLogin);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if(!userInfo){
+      history.push('/login');
+    }
     const addPayPalScript = async () => {
       const { data: clientId } = await axios.get(
         '/api/config/paypal-client-id'
@@ -35,20 +41,22 @@ const OrderScreen = ({ match }) => {
       };
       document.body.appendChild(script);
     };
-    if (!order || successPay) {
-      console.log('first if');
+    if (!order || successPay || order._id !== orderId || successDeliver) {
       dispatch ({ type: 'ORDER_PAY_RESET'})
       dispatch(getOrderDetails(orderId));
     } else if (!order.isPaid) {
-      console.log('second if');
       if (!window.paypal) addPayPalScript();
       else setSdkReady(true);
     }
-  }, [orderId, dispatch, successPay, order ]);
+  }, [orderId, order?._id, dispatch, successPay, successDeliver]);
 
   const successPaymentHandler = (paymentResult) => {
     console.log(paymentResult);
     dispatch(payOrder(orderId, paymentResult ))
+  }
+
+  const deliverHandler = () => {
+    dispatch(deliverOrder(order._id));
   }
 
   return loading ? (
@@ -168,6 +176,9 @@ const OrderScreen = ({ match }) => {
       <PayPalButton amount={order.totalPrice} onSuccess={successPaymentHandler} />
     )}
   </ListGroup.Item>
+)}
+{userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+  <Button onClick={deliverHandler}>Set As Delivered</Button>
 )}
             </ListGroup>
           </Card>
