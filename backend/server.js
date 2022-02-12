@@ -1,4 +1,5 @@
 import path from 'path';
+import morgan from 'morgan';
 import express from 'express';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
@@ -14,9 +15,11 @@ dotenv.config();
 
 connectDB();
 
-app.get('/', (req, res) => {
-  res.send('Api is running...');
-});
+if(process.env.NODE_ENV === 'development'){
+  app.use(morgan('dev'));
+}
+
+
 
 app.use(express.json());
 
