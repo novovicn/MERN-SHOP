@@ -135,3 +135,45 @@ export const updateProduct = (product) => async (dispatch, getState) => {
     })
   }
 }
+
+export const createReview = (id, review) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: 'CREATE_PRODUCT_REVIEW_REQUEST',
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const { data } = await axios.post(
+      `/api/products/${id}/reviews`,
+      review,
+      config
+    )
+
+    dispatch({
+      type: 'CREATE_PRODUCT_REVIEW_SUCCESS',
+      payload: data,
+    })
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message
+    if (message === 'Not authorized, token failed') {
+      dispatch(logout())
+    }
+    dispatch({
+      type: 'CREATE_PRODUCT_REVIEW_FAIL',
+      payload: message,
+    })
+  }
+}
