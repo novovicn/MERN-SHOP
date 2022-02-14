@@ -8,7 +8,7 @@ import { listProducts } from '../store/actions/productActions';
 
 const HomeScreen = ({match}) => {
   const keyword = match.params.keyword;
-  console.log('keyword', match.params.keyword);
+  const page = match.params.page;
 
   const dispatch = useDispatch();
   const { loading, products, error } = useSelector(
@@ -16,8 +16,8 @@ const HomeScreen = ({match}) => {
   );
 
   useEffect(() => {
-    dispatch(listProducts(keyword));
-  }, [dispatch, keyword]);
+    dispatch(listProducts(keyword, page));
+  }, [dispatch, keyword, page]);
 
   return (
     <>
