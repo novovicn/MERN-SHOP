@@ -5,13 +5,14 @@ import Product from '../components/Product';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { listProducts } from '../store/actions/productActions';
+import Paginate from '../components/Paginate';
 
 const HomeScreen = ({match}) => {
   const keyword = match.params.keyword;
   const page = match.params.page;
 
   const dispatch = useDispatch();
-  const { loading, products, error } = useSelector(
+  const { loading, products, error, pages, page:currentPage } = useSelector(
     (state) => state.productList
   );
 
@@ -27,6 +28,7 @@ const HomeScreen = ({match}) => {
       ) : error ? (
         <Message variant="danger">{error} </Message>
       ) : (
+        <>
         <Row>
           {products.map((product) => (
             <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
@@ -34,6 +36,8 @@ const HomeScreen = ({match}) => {
             </Col>
           ))}
         </Row>
+        <Paginate page={currentPage} pages={pages}/>
+        </>
       )}
     </>
   );
