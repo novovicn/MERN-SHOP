@@ -12,6 +12,20 @@ export const productListReducer = (state = { products: [] }, action) => {
   }
 };
 
+export const topRatedProductsReducer = (state = { products: [] }, action) => {
+  switch (action.type) {
+    case 'TOP_PRODUCTS_REQUEST':
+      return { loading: true, products: [] };
+    case 'TOP_PRODUCTS_SUCCESS':
+      return { loading: false, products: action.payload };
+    case 'TOP_PRODUCTS_FAIL':
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+
 export const productReducer = (state = { product: {} }, action) => {
   switch (action.type) {
     case 'PRODUCT_DETAILS_REQUEST':
