@@ -8,6 +8,7 @@ import Message from '../components/Message';
 import { listProducts } from '../store/actions/productActions';
 import Paginate from '../components/Paginate';
 import { Link } from 'react-router-dom';
+import Meta from '../components/Meta';
 
 const HomeScreen = ({match}) => {
   const keyword = match.params.keyword;
@@ -24,6 +25,7 @@ const HomeScreen = ({match}) => {
 
   return (
     <>
+    <Meta/>
     {!keyword ? (
         <ProductCarousel />
       ) : (
